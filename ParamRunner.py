@@ -2,6 +2,7 @@ import argparse
 import csv
 import os
 import re
+import subprocess
 import sys
 
 
@@ -74,8 +75,8 @@ def assert_items_presence(line:list, params:list):
     # Ensure that the csv line has an equal number of items as params
     assert len(line) == len(params)
 
-def parse_command_into_params(command:str) -> list:
-    return re.findall("\{(.*?)\}", command)
+def parse_command_into_params(command:str) -> set:
+    return set(re.findall("\{(.*?)\}", command))
 
 def parse_values(lines:list) -> set:
     values = [tuple(line) for line in lines if len(line) == len(lines[0])]
