@@ -83,6 +83,21 @@ def parse_values(lines:list) -> set:
     return set(values)
 
 
+############ Execute commands
+def execute_software(settings:dict):
+    for paramvalue in settings["values"]:
+        run_command = create_command(settings["command"], settings["params"], paramvalue)
+        execute_command(run_command)
+
+def create_command(command:str, params:set, values:tuple) -> list:
+    for param, value in zip(params, values):
+        command = command.replace(f"{'{' + param + '}'}", str(value))
+    return command.split()
+
+def execute_command(run_command:list):
+    subprocess.run(run_command)
+
+
 ############ MAIN
 def main():
     parser = argparse.ArgumentParser()
@@ -91,7 +106,7 @@ def main():
 
     config = load_config(args.configfile)
     settings = parse_settings(config)
-    print(settings)
+    execute_software(settings)
 
 if __name__ == "__main__":
     main()
