@@ -1,0 +1,4 @@
+echo {string} | echo {value} > {file}
+
+string,value,file
+something,0,out.txt
