@@ -1,9 +1,9 @@
 import argparse
 import csv
+from datetime import datetime
+import logging
 import os
 import re
-import subprocess
-import sys
 
 
 ############ Load config csv file
@@ -11,7 +11,9 @@ def load_config(filepath:str) -> list:
     assert_exist(filepath)
     assert_file(filepath)
     assert_ends(filepath)
+    logger.info(f"File {filepath} can be opened")
     config = read_config(filepath)
+    logger.info(f"File {filepath} read into memory")
     return config
 
 def assert_exist(input_arg:str):
@@ -40,8 +42,11 @@ def parse_settings(config:list) -> dict:
     assert_empty(config[1])
     settings = {}
     settings["command"] = config[0][0] # First line, first item
+    logger.info(f"Parsed command '{settings['command']}'")
     settings["params"] = parse_command_into_params(settings["command"])
+    logger.info(f"Parsed parameter names {settings['params']}")
     assert_command_params(settings["params"])
+    logger.info("Parsed parameter names match names in command")
     assert_items_presence(config[2], settings["params"]) # Ensure number of params are defined
     assert_params_presence(config[2], settings["params"])
     assert_items_presence(config[3], settings["params"]) # Ensure at least one line with values
@@ -79,7 +84,11 @@ def parse_command_into_params(command:str) -> set:
     return set(re.findall("\{(.*?)\}", command))
 
 def parse_values(lines:list) -> set:
-    values = [tuple(line) for line in lines if len(line) == len(lines[0])]
+    values = []
+    for line in lines:
+        if len(line) == len(lines[0]):
+            values.append(tuple(line))
+            logger.info(f"Parsed parameter values {tuple(line)}")
     return set(values)
 
 
@@ -87,15 +96,16 @@ def parse_values(lines:list) -> set:
 def execute_software(settings:dict):
     for paramvalue in settings["values"]:
         run_command = create_command(settings["command"], settings["params"], paramvalue)
+        logger.info(f"Running command with following values {paramvalue}")
         execute_command(run_command)
 
-def create_command(command:str, params:set, values:tuple) -> list:
+def create_command(command:str, params:set, values:tuple) -> str:
     for param, value in zip(params, values):
         command = command.replace(f"{'{' + param + '}'}", str(value))
-    return command.split()
+    return command
 
-def execute_command(run_command:list):
-    subprocess.run(run_command)
+def execute_command(run_command:str):
+    os.system(run_command)
 
 
 ############ MAIN
@@ -104,9 +114,19 @@ def main():
     parser.add_argument('-f', '--file', dest='configfile', type=str, required=True, help="CSV formatted file with user settings.")
     args = parser.parse_args()
 
+    logger.info("Loading Configfile")
     config = load_config(args.configfile)
+    logger.info("Parsing Settings")
     settings = parse_settings(config)
+    logger.info("Execute Software")
     execute_software(settings)
 
 if __name__ == "__main__":
+    logfilename = 'ParamRunner_{:%Y_%m_%d-%H_%M_%S}.log'.format(datetime.now())
+    logging.basicConfig(filename=logfilename,
+                        filemode='a',
+                        format='%(asctime)s,%(msecs)d %(levelname)s %(message)s',
+                        datefmt=':%Y_%m_%d-%H:%M:%S',
+                        level=logging.DEBUG)
+    logger = logging.getLogger()
     main()
