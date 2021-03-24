@@ -1,4 +1,4 @@
-echo {string} | echo {value} > {file}
+echo "{string} {value}" | rev > {file}
 
 string,value,file
 something,0,out.txt
