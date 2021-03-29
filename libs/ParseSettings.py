@@ -11,12 +11,13 @@ def parse_settings(config:list) -> dict:
     settings = {}
     settings["command"] = config[0][0] # First line, first item
     logger.info(f"Parsed command '{settings['command']}'")
-    settings["params"] = parse_command_into_params(settings["command"])
-    logger.info(f"Parsed parameter names {settings['params']}")
-    assert_command_params(settings["params"])
+    params = parse_command_into_params(settings["command"])
+    logger.info(f"Parsed parameter names {params}")
+    assert_command_params(params)
     logger.info("Parsed parameter names match names in command")
-    assert_items_presence(config[2], settings["params"]) # Ensure number of params are defined
-    assert_params_presence(config[2], settings["params"])
+    assert_items_presence(config[2], params) # Ensure number of params are defined
+    assert_params_presence(config[2], params)
+    settings["params"] = config[2]
     assert_items_presence(config[3], settings["params"]) # Ensure at least one line with values
     settings["values"] = parse_values(config[3:])
     return settings
@@ -49,7 +50,7 @@ def assert_items_presence(line:list, params:list):
     assert len(line) == len(params)
 
 def parse_command_into_params(command:str) -> set:
-    return set(re.findall("\{(.*?)\}", command))
+    return list(dict.fromkeys(re.findall("\{(.*?)\}", command)))
 
 def parse_values(lines:list) -> set:
     values = []
