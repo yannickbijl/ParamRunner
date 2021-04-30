@@ -6,7 +6,7 @@ from libs.LoadConfig import load_config
 from libs.ParseSettings import parse_settings
 from libs.ExecuteSoftware import execute_software
 
-def check_positive(value):
+def check_positive(value:str) -> int:
     int_value = int(value)
     if int_value <= 0:
         raise argparse.ArgumentTypeError(f"{value} is an invalid int value")
