@@ -36,21 +36,21 @@ def assert_empty(line:list):
     # Ensure that line is empty
     assert len(line) == 0
 
-def assert_command_params(params:list):
+def assert_command_params(params:tuple):
     # Ensure there are params
     assert len(params) >= 1
 
-def assert_params_presence(line:list, params:list):
+def assert_params_presence(line:list, params:tuple):
     # Ensure that each item in line is also in params
     for item in line:
         assert item in params
 
-def assert_items_presence(line:list, params:list):
+def assert_items_presence(line:list, params:tuple):
     # Ensure that the csv line has an equal number of items as params
     assert len(line) == len(params)
 
-def parse_command_into_params(command:str) -> set:
-    return list(dict.fromkeys(re.findall("\{(.*?)\}", command)))
+def parse_command_into_params(command:str) -> tuple:
+    return tuple(dict.fromkeys(re.findall("\{(.*?)\}", command)))
 
 def parse_values(lines:list) -> set:
     values = []
