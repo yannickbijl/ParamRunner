@@ -6,10 +6,10 @@ logger = logging.getLogger(__name__)
 ############ Parse settings from config
 def parse_settings(config:list) -> dict:
     assert_min_length(config)
-    assert_command(config[0])
-    assert_empty(config[1])
+    assert_command(list(filter(None, config[0])))
+    assert_empty(list(filter(None, config[1])))
     settings = {}
-    settings["command"] = config[0][0] # First line, first item
+    settings["command"] = list(filter(None, config[0]))[0] # First line, first item
     logger.info(f"Parsed command '{settings['command']}'")
     params = parse_command_into_params(settings["command"])
     logger.info(f"Parsed parameter names {params}")
