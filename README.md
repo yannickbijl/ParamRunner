@@ -1,22 +1,54 @@
 # ParamRunner
-Automatic execution of user-specified parameters for commandline software tools
+Automatic execution of user-specified parameters for UNIX commands
 
-# Requirements
+---
+ParamRunner is a CLI tool for running the same command with different parameter settings.
+
+ParamRunner is written in Python.
+It runs UNIX commands with user-defined parameter values.
+See the section [Configfile](#configfile) for more information about defining the command and parameters. In principle ParamRunner is able to execute any valid Unix command.
+
+
+## Requirements
  * UNIX (Linux, Mac, Windows Subsystem for Linux (WSL))
- * Python >= 3.8
+ * Python >= 3.8 (tested, earlier versions could potentially work as well)
 
-# How to Use
-Run ParamRunner with the following command:  
-`python3 ParamRunner.py -f {config file}`
+## Installation
+Currently the only option to install ParamRunner is through manual installation.
+```bash
+git clone https://github.com/yannickbijl/ParamRunner.git
+cd ParamRunner
+python setup.py install
+```
 
-The `config file` is a csv formatted file.  
-The csv file consist of minimally 4 lines.
+## Usage
+### CLI
+The basic usage of ParamRunner is the following command with a config file:
+```bash
+paramrunner -f [configfile]
+```
 
-The first line contains the command to be run.  
-The second line is empty.  
-The third line contains the parameter names, these should match with the given command.  
-From the fourth line on, values for the parameters are given.  
-See [Example Config](docs/example_config.csv) for an easy viewable config file.
+### Configfile
+The configfile is a csv formatted file.
+In the first cell (A1) the `command` needs to be placed.
+The rest of the first row is empty.
 
-# License
+The `command` is a valid unix command. Parameters with different settings need to be place between `{}`.
+```bash 
+bash doSomething.sh {param1} {param2} {param3} constant
+```
+
+The second row is completely empty.
+The third row commands the parameter names.
+These must match with parameters in the command, though the order is irrelevant.
+From the fourth row onwards are the values for the different parameters.
+
+| Row\Col | A       | B      | C      |
+|---------|---------|--------|--------|
+| 1       | command |        |        |
+| 2       |         |        |        |
+| 3       | param1  | param2 | param3 |
+| 4       | value   | value  | value  |
+
+## License
 MIT License
