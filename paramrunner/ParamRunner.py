@@ -5,15 +5,9 @@ from datetime import datetime
 from typing import Union
 
 from .libs.LoadConfig import load_config
+from .libs.ParseArgs import parse_args
 from .libs.ParseSettings import parse_settings
 from .libs.ExecuteSoftware import execute_software
-
-
-def check_positive(value:str) -> int:
-    int_value = int(value)
-    if int_value <= 0:
-        raise argparse.ArgumentTypeError(f"{value} is an invalid int value")
-    return int_value
 
 def check_measure_argument(value:int, params:tuple, timestamp:str) -> Union[None, tuple]:
     if value == 0:
@@ -37,14 +31,13 @@ def create_measurefile(header, timestamp) -> str:
 ############ MAIN
 def main():
     # Argument Options
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--file', dest='configfile', type=str, required=True, help="CSV formatted file with user settings.")
-    parser.add_argument('-m', '--measure', dest='measure', type=check_positive, required=False, default=0, help="Number of times command with same parameter settings must be run to measure performance.")
-    args = parser.parse_args()
-
+    args = parse_args()
+    
     # Creating general variables
+
     timestamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
     logfilename = f"ParamRunner_{timestamp}.log"
+
     logging.basicConfig(filename=logfilename,
                         filemode='a',
                         format='%(asctime)s,%(msecs)d %(levelname)s %(message)s',
