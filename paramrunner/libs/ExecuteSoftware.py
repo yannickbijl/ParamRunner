@@ -5,18 +5,18 @@ import os
 logger = logging.getLogger(__name__)
 
 ############ Execute commands
-def execute_software(settings:dict, measure:tuple=None):
+def execute_software(settings:dict, options:dict):
     for paramvalue in settings["values"]:
         run_command = create_command(settings["command"], settings["params"], paramvalue)
-        if measure == None:
+        if options['measure'] == None:
            logger.info(f"Running command with following values {paramvalue}")
            execute_command(run_command)
         else:
-            for run in range(measure[1]):                
+            for run in range(options['measure'][1]):                
                 logger.info(f"Running command with following values {paramvalue}")
-                logger.info(f"Performance metrics will be measured amd logged in {measure[0]}")
+                logger.info(f"Performance metrics will be measured amd logged in {options['measure'][0]}")
                 info_line = generate_info_line(run+1,paramvalue)
-                measure_command = adjust_command(run_command, measure[0], info_line)
+                measure_command = adjust_command(run_command, options['measure'][0], info_line)
                 execute_command(measure_command)
 
 def generate_info_line(run:int, values:tuple) -> str:
