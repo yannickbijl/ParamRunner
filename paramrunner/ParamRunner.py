@@ -1,39 +1,24 @@
-import argparse
-import logging
-
-from datetime import datetime
-
-from .libs.LoadConfig import load_config
-from .libs.ParseOptions import parse_options
-from .libs.ParseSettings import parse_settings
 from .libs.ExecuteSoftware import execute_software
+from .libs.LogMessages import log_message, make_logger
+from .libs.MeasureMetrics import make_metricsfile
+from .libs.ParseArguments import get_arguments
+from .libs.ParseCommands import get_commands
+from .libs.ParseConfig import get_config
 
 
 ############ MAIN
 def main():
     # Argument Options
-    args = parse_args()
-    
-    # Creating general variables
+    args = get_arguments()
+    make_logger(args.logging)
+    make_metricsfile(args.measure)
 
-    timestamp = datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
-    logfilename = f"ParamRunner_{timestamp}.log"
-
-    logging.basicConfig(filename=logfilename,
-                        filemode='a',
-                        format='%(asctime)s,%(msecs)d %(levelname)s %(message)s',
-                        datefmt='%Y_%m_%d-%H:%M:%S',
-                        level=logging.DEBUG)
-    logger = logging.getLogger()
-
-    logger.info("Loading Configfile")
-    config = load_config(args.configfile)
-    logger.info("Parsing Settings")
-    settings = parse_settings(config)
-    logger.info("Parsing Options")
-    options = parse_options(args, settings, timestamp)
-    logger.info("Execute Software")
-    execute_software(settings, options)
+    log_message("Loading Configfile")
+    config = get_config(args.configfile, args.format)
+    log_message("Generating Commands")
+    commands = get_commands(config)
+    log_message("Executing Commands")
+    execute_software(commands)
 
 if __name__ == "__main__":
     main()
