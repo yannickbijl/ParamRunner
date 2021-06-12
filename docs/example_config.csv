@@ -1,7 +1,4 @@
-"echo ""{string} {value}"" | rev > {file}",
-
-string,value,file
-something1,0,out1.txt
-something1,1,out2.txt
-something2,0,out3.txt
-something2,1,out4.txt
+command,"echo ""{string} {value}"" | rev > {file}"
+string,something1,something1,something2,something2
+value,0,1,0,1
+file,out1.txt,out2.txt,out3.txt,out4.txt

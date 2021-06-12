@@ -1,8 +1,8 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name ='ParamRunner',
-    version ='1.0.0',
+    version ='0.0.4',
     author ='Yannick Bijl',
     author_email ='yannick.bijl@gmail.com',
     url ='https://github.com/yannickbijl/ParamRunner',
